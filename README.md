@@ -84,16 +84,102 @@ How to use this rule and the knowledge of the domain of the variables to our adv
 9|x
 ```
 
-Ideally, the domain of **A** should be [1,2,3,4,5,6,7,8,9]. But since (1,4)=4, (1,7)=7, (3,2)=1, (2,1)=7 and (6,1)=3, and these lie in the neighborhood of **A**, and also as we need to select a value for **A** that does not conflict with the rule mentioned above, **A** cannot take either of the following values [1,3,4,7,9]. Thus, given this knowledge about the values in the neighborhood of **A**, the domain of **A** effectively reduces to [2,5,6,8]. Note that (1,4) denotes the value in the 4<sup>th</sup> column of the 1<sup>st</sup> row, and likewise for others. 
+Ideally, the domain of **A** should be [1,2,3,4,5,6,7,8,9]. But since (1,4)=4, (1,7)=7, (3,2)=1, (2,1)=7 and (6,1)=3, and these lie in the neighborhood of **A**, and also as we need to select a value for **A** that does not conflict with the rule mentioned above, **A** cannot take either of the following values [1,3,4,7,9]. Thus, given this knowledge about the values in the neighborhood of **A**, the domain of **A** effectively reduces to [2,5,6,8]. Note that (1,4) denotes the value in the 4<sup>th</sup> column of the 1<sup>st</sup> row, and likewise for others.
 
 _Hence, by converting the problem to a CSP and using the knowledge of the domains of the variables in the neighborhood of a particular variable, we can reduce the size of the domain of that variable_.
 
 This approach is used to reduce the size of the domains of all the empty squares in the puzzle. Although, just a naive implementation of this _domain reduction_ approach may not solve the puzzle entirely, search methods like Backtracking can be used to find the solution for the puzzle. The search algorithms become tractable for solving a **majority** of the puzzles since we significantly reduce the size of the search space by using the constraint relationships.
 
-## Constraint propagation
-(Unfortunately, some puzzles are tough nuts to crack!! How to use additional knowledge to make the above mentioned _domain-reduction->search_ approach more tractable for solving **almost** all the puzzles??)
+## Further improvements in the efficiency of the algorithm
+Unfortunately, some puzzles are tough nuts to crack!! How to use additional knowledge to make the above mentioned _domain-reduction->search_ approach more tractable for solving **almost** all the puzzles?
 
-_Work in progress...._
+* __Minimum Remaining Values(MRV) heuristic__ - Firstly, what is a heuristic? Informally, assume that you are using an algorithm to perform some task. In this case, a heuristic is a domain specific information which makes the algorithm more efficient. In the domain-reduction->search approach(_from now on, I will use the term search to refer to the domain-reduction->search approach discussed in the earlier section, and not the naive search algorithm!_), the values are assigned to the variables one variable at a time. So, once a value is assigned to a variable, we need to select another variable to which a value will be assigned. We can use the MRV heuristic to select this variable. The idea is to select a variable whose domain is the least in size. This helps to detect the failures soon and backtrack before going deeper in the search tree.
+
+* __Forward Checking__ - Whenever a value is assigned to a variable, that value is removed from the domains of all the variables in the neighborhood of that variable. This has two advantages: Firstly, it further reduces the size of the search space since after every assignment to a variable, the size of the domains of other variables in the neighborhood of that variable are reduced. Secondly, this helps to detect the failures early and the algorithm can backtrack sooner.
+
+* __Constraint Propagation__ - I like to think of Constraint Propagation as _Recursive Forward Checking!_ Consider the following scenario:
+
+```
+  1 2 3   4   5 6 7 8 9
+  _____________________
+1|4 x x [1,4] x x x x x
+2|x x x   x   x x x x x
+3|x x x   x
+4|x     [1,2]
+5|x
+6|x
+7|x
+8|x
+9|x
+```
+
+Assume that (1,1) was assigned the value 4. Using the idea of Forward Checking, the domain of (1,4) can be reduced to [1], since it cannot take the value 4 as (1,1) has already taken that value(_Neighborhood!_).
+
+```
+  1 2 3   4   5 6 7 8 9
+  _____________________
+1|4 x x   1   x x x x x
+2|x x x   x   x x x x x
+3|x x x   x
+4|x     [1,2]
+5|x
+6|x
+7|x
+8|x
+9|x
+```
+
+But now the domain of (1,4) is reduced to 1, while that of (4,4) is [1,2]. Since (4,4)=1 won't satisfy the constraint relationship between (1,4) and (4,4)(_Neighborhood!_), the domain of (4,4) can be reduced to [2].
+
+```
+  1 2 3 4 5 6 7 8 9
+  _________________
+1|4 x x 1 x x x x x
+2|x x x x x x x x x
+3|x x x x
+4|x     2
+5|x
+6|x
+7|x
+8|x
+9|x
+```
+
+Thus, instead of just reducing the domain of just (1,4) after assigning the value to (1,1) as implied by Forward Checking, we can also reduce the domain of (4,4) which is in the neighborhood of (1,4) and then recursively reduce the domains of all the neighbors of (4,4) and so on. This idea of recursively reducing the domains after each assignment operation significantly reduces the size of the search space and the _search_ algorithm can reach the solution state in lesser time!
+
+So, let us go back to the Sudoku puzzle we discussed earlier:
+
+```
+4 0 0|0 0 0|8 0 5
+0 3 0|0 0 0|0 0 0
+0 0 0|7 0 0|0 0 0
+-----+-----+-----
+0 2 0|0 0 0|0 6 0
+0 0 0|0 8 0|4 0 0
+0 0 0|0 1 0|0 0 0
+-----+-----+-----
+0 0 0|6 0 3|0 7 0
+5 0 0|2 0 0|0 0 0
+1 0 4|0 0 0|0 0 0
+```
+
+Finding the solution using just naive Backtracking would have been impossible! But, using the approaches discussed above, the algorithm solved this puzzle in **less than 2 seconds!!**
+
+```
+[4] [1] [7] [3] [6] [9] [8] [2] [5]
+[6] [3] [2] [1] [5] [8] [9] [4] [7]
+[9] [5] [8] [7] [2] [4] [3] [1] [6]
+[8] [2] [5] [4] [3] [7] [1] [6] [9]
+[7] [9] [1] [5] [8] [6] [4] [3] [2]
+[3] [4] [6] [9] [1] [2] [7] [5] [8]
+[2] [8] [9] [6] [4] [3] [5] [7] [1]
+[5] [7] [3] [2] [9] [1] [6] [8] [4]
+[1] [6] [4] [8] [7] [5] [2] [9] [3]
+
+Duration(seconds): 1.89293384552
+```
+
+
 
 ## Running the script
 Clone or download the project on your local machine.
