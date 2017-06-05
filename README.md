@@ -1,5 +1,14 @@
 # ai_sudoku
 
+## Table of contents
+* [Introduction](https://github.com/jshcs/ai_sudoku#introduction)
+* [Dependencies](https://github.com/jshcs/ai_sudoku#dependencies)
+* [Methodology](https://github.com/jshcs/ai_sudoku#methodology)
+* [Converting to a Constraint Satisfaction Problem](https://github.com/jshcs/ai_sudoku#converting-to-a-constraint-satisfaction-problem)
+* [Further improvements in the efficiency of the algorithm](https://github.com/jshcs/ai_sudoku#further-improvements-in-the-efficiency-of-the-algorithm)
+* [Running the script](https://github.com/jshcs/ai_sudoku#running-the-script)
+* [References](https://github.com/jshcs/ai_sudoku#references)
+
 ## Introduction
 The goal of this project is to develop a [Sudoku](https://en.wikipedia.org/wiki/Sudoku) solving AI agent. The Sudoku puzzles are in the form of a 9\*9 grid and the idea is to place all the numbers from 1 to 9 in such a way that all columns, all rows and all 3\*3 sub-grids contain a single instance of each of the 9 numbers. So, no two squares in the same column, in same row and in the same 3*3 sub-grid can have the same number. A partially solved puzzle is given and the objective is to fill the remaining squares in the grid with the appropriate numbers. Any valid Sudoku puzzle has a unique solution.
 
@@ -216,5 +225,5 @@ $ python sudokusolver.py f test.txt
 $ python sudokusolver.py r '4 0 0 0 0 0 8 0 5 0 3 0 0 0 0 0 0 0 0 0 0 7 0 0 0 0 0 0 2 0 0 0 0 0 6 0 0 0 0 0 8 0 4 0 0 0 0 0 0 1 0 0 0 0 0 0 0 6 0 3 0 7 0 5 0 0 2 0 0 0 0 0 1 0 4 0 0 0 0 0 0'
 ```
 
-## References:
+## References
 1. Russell and Norvig. _Artificial Intelligence: A Modern Approach, 2<sup>nd</sup> edition_.
