@@ -1,5 +1,7 @@
 # ai_sudoku
 
+Try out the solver in the browser - [https://jshcs.github.io/ai_sudoku/index.html](https://jshcs.github.io/ai_sudoku/index.html)
+
 ## Table of contents
 * [Introduction](https://github.com/jshcs/ai_sudoku#introduction)
 * [Dependencies](https://github.com/jshcs/ai_sudoku#dependencies)
@@ -191,6 +193,9 @@ Duration(seconds): 1.89293384552
 
 
 ## Running the script
+
+Try out the solver in the browser [here](https://jshcs.github.io/ai_sudoku/index.html), or follow the steps mentioned below to run the solver from a terminal.
+
 Clone or download the project on your local machine.
 Assume you want to solve the following puzzle:
 ```
